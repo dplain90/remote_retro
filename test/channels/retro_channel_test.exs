@@ -91,14 +91,14 @@ defmodule RemoteRetro.RetroChannelTest do
       assignee_id = nil
       push(socket, "new_idea", %{category: "happy", body: "we're pacing well", userId: user_id, assigneeId: assignee_id})
 
-      assert_broadcast("new_idea_received", %{category: "happy", body: "we're pacing well", id: _, user_id: ^user_id})
+      assert_broadcast("idea_created", %{category: "happy", body: "we're pacing well", id: _, user_id: ^user_id})
     end
 
     test "when in action_items stage results in the broadcast of the new action item to all connected clients", %{socket: socket, user: user} do
       user_id = user.id
       push(socket, "new_idea", %{category: "action-item", body: "Do something about the pacing", userId: user_id, assigneeId: user_id})
 
-      assert_broadcast("new_idea_received", %{category: "action-item", body: "Do something about the pacing", id: _, user_id: ^user_id, assignee_id: ^user_id})
+      assert_broadcast("idea_created", %{category: "action-item", body: "Do something about the pacing", id: _, user_id: ^user_id, assignee_id: ^user_id})
     end
   end
 

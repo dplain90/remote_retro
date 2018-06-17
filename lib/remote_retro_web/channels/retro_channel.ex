@@ -49,7 +49,7 @@ defmodule RemoteRetroWeb.RetroChannel do
   def handle_in("new_idea", props, socket) do
     idea = add_idea! props, socket
 
-    broadcast! socket, "new_idea_received", idea
+    broadcast! socket, "idea_created", idea
     {:noreply, socket}
   end
 

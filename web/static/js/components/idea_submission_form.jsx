@@ -1,13 +1,15 @@
 import React, { Component } from "react"
 import { connect } from "react-redux"
+import { bindActionCreators } from "redux"
 import throttle from "lodash/throttle"
 import values from "lodash/values"
+
 import * as AppPropTypes from "../prop_types"
 import { USER_TYPING_ANIMATION_DURATION } from "../services/user_activity"
-
 import styles from "./css_modules/idea_submission_form.css"
 import STAGES from "../configs/stages"
 import SelectDropdown from "./select_dropdown"
+import { actions } from "../redux"
 
 const { IDEA_GENERATION, ACTION_ITEMS } = STAGES
 
@@ -50,7 +52,7 @@ export class IdeaSubmissionForm extends Component {
     const { currentUser } = this.props
     event.preventDefault()
     const newIdea = { ...this.state, userId: currentUser.id }
-    this.props.retroChannel.push("new_idea", newIdea)
+    this.props.actions.submitIdeaOptimistically(newIdea)
     this.setState({ body: "" })
   }
 
@@ -166,6 +168,11 @@ const mapStateToProps = ({ alert, usersById }) => ({
   users: values(usersById),
 })
 
+const mapDispatchToProps = dispatch => ({
+  actions: bindActionCreators(actions, dispatch),
+})
+
 export default connect(
-  mapStateToProps
+  mapStateToProps,
+  mapDispatchToProps
 )(IdeaSubmissionForm)

@@ -28,12 +28,12 @@ describe("idea reducer", () => {
   })
 
   describe("the handled actions", () => {
-    describe("when the action is ADD_IDEA", () => {
+    describe("when the action is IDEA_CREATED", () => {
       it("should add an idea to list of ideas", () => {
         const initialState = [{ body: "i'm an old idea!", category: "happy", user_id: 2 }]
         deepFreeze(initialState)
         const idea = { body: "we have a linter!", category: "happy", user_id: 1 }
-        const action = { type: "ADD_IDEA", idea }
+        const action = { type: "IDEA_CREATED", idea }
 
         expect(ideasReducer(initialState, action)).to.deep.equal([...initialState, idea])
       })
@@ -79,11 +79,11 @@ describe("idea reducer", () => {
 })
 
 describe("actionCreators", () => {
-  describe("addIdea", () => {
+  describe("ideaCreated", () => {
     it("creates an action to add idea to store", () => {
       const idea = { body: "we have a linter!", category: "happy", user_id: 1 }
 
-      expect(actionCreators.addIdea(idea)).to.deep.equal({ type: "ADD_IDEA", idea })
+      expect(actionCreators.ideaCreated(idea)).to.deep.equal({ type: "IDEA_CREATED", idea })
     })
   })
 

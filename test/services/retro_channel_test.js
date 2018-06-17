@@ -56,7 +56,7 @@ describe("RetroChannel", () => {
       describe("retroChannel Events", () => {
         let retroChannel
         let actions
-        let addIdeaSpy
+        let ideaCreatedSpy
         let deleteIdeaSpy
         let updateIdeaSpy
         let updatePresenceSpy
@@ -65,7 +65,7 @@ describe("RetroChannel", () => {
         let clock
 
         beforeEach(() => {
-          addIdeaSpy = spy()
+          ideaCreatedSpy = spy()
           deleteIdeaSpy = spy()
           updateIdeaSpy = spy()
           updatePresenceSpy = spy()
@@ -74,7 +74,7 @@ describe("RetroChannel", () => {
           clock = useFakeTimers(Date.now())
 
           actions = {
-            addIdea: addIdeaSpy,
+            ideaCreated: ideaCreatedSpy,
             deleteIdea: deleteIdeaSpy,
             updateIdea: updateIdeaSpy,
             updatePresence: updatePresenceSpy,
@@ -85,10 +85,10 @@ describe("RetroChannel", () => {
           retroChannel = RetroChannel.configure({ actions })
         })
 
-        describe("on `new_idea_received`", () => {
-          it("invokes the addIdea action", () => {
-            retroChannel.trigger("new_idea_received", { body: "zerp" })
-            expect(addIdeaSpy.calledWith({ body: "zerp" })).to.equal(true)
+        describe("on `idea_created`", () => {
+          it("invokes the ideaCreated action", () => {
+            retroChannel.trigger("idea_created", { body: "zerp" })
+            expect(ideaCreatedSpy.calledWith({ body: "zerp" })).to.equal(true)
           })
         })
 

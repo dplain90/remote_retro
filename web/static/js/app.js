@@ -25,7 +25,7 @@ retroChannel.on("presence_state", presences => {
 })
 
 retroChannel.on("presence_diff", actionz.syncPresenceDiff)
-retroChannel.on("new_idea_received", actionz.addIdea)
+retroChannel.on("idea_created", actionz.ideaCreated)
 
 retroChannel.on("proceed_to_next_stage", payload => {
   actionz.updateStage(payload.stage)

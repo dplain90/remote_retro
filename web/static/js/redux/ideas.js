@@ -1,14 +1,20 @@
 const types = {
-  ADD_IDEA: "ADD_IDEA",
+  IDEA_CREATED: "IDEA_CREATED",
   UPDATE_IDEA: "UPDATE_IDEA",
   DELETE_IDEA: "DELETE_IDEA",
 }
 
 export const actions = {
-  addIdea: idea => ({
-    type: types.ADD_IDEA,
+  ideaCreated: idea => ({
+    type: types.IDEA_CREATED,
     idea,
   }),
+
+  submitIdeaOptimistically: idea => {
+    return (dispatch, getState, retroChannel) => {
+      retroChannel.push("new_idea", idea)
+    }
+  },
 
   updateIdea: (ideaId, newAttributes) => ({
     type: types.UPDATE_IDEA,
@@ -26,7 +32,7 @@ export const reducer = (state = [], action) => {
   switch (action.type) {
     case "SET_INITIAL_STATE":
       return action.initialState.ideas
-    case types.ADD_IDEA:
+    case types.IDEA_CREATED:
       return [...state, action.idea]
     case types.UPDATE_IDEA:
       return state.map(idea => (
