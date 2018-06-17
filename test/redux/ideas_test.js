@@ -51,12 +51,12 @@ describe("idea reducer", () => {
       })
     })
 
-    describe("when the action is UPDATE_IDEA", () => {
+    describe("when the action is IDEA_UPDATED", () => {
       const initialIdeas = [{ id: 666, category: "happy", user_id: 1 }, { id: 22, category: "n/a", user_id: 2 }]
       deepFreeze(initialIdeas)
 
       it("returns an updated set of ideas, where the idea with matching id has updated attributes", () => {
-        const action = { type: "UPDATE_IDEA", ideaId: 666, newAttributes: { category: "sad" } }
+        const action = { type: "IDEA_UPDATED", ideaId: 666, newAttributes: { category: "sad" } }
         expect(ideasReducer(initialIdeas, action)).to.deep.equal([
           { id: 666, category: "sad", user_id: 1 },
           { id: 22, category: "n/a", user_id: 2 },
@@ -64,12 +64,12 @@ describe("idea reducer", () => {
       })
     })
 
-    describe("when the action is DELETE_IDEA", () => {
+    describe("when the action is IDEA_DELETED", () => {
       const initialIdeas = [{ id: 667, category: "happy", user_id: 1 }, { id: 22, category: "n/a", user_id: 2 }]
       deepFreeze(initialIdeas)
 
       it("returns an updated set of ideas, where the idea with matching id has been removed", () => {
-        const action = { type: "DELETE_IDEA", ideaId: 667 }
+        const action = { type: "IDEA_DELETED", ideaId: 667 }
         expect(ideasReducer(initialIdeas, action)).to.deep.equal([
           { id: 22, category: "n/a", user_id: 2 },
         ])
@@ -93,7 +93,7 @@ describe("actionCreators", () => {
       const newAttributes = { name: "Kimberly" }
 
       expect(actionCreators.updateIdea(ideaId, newAttributes)).to.deep.equal({
-        type: "UPDATE_IDEA",
+        type: "IDEA_UPDATED",
         ideaId,
         newAttributes,
       })
@@ -105,7 +105,7 @@ describe("actionCreators", () => {
       const ideaId = 999
 
       expect(actionCreators.deleteIdea(ideaId)).to.deep.equal({
-        type: "DELETE_IDEA",
+        type: "IDEA_DELETED",
         ideaId,
       })
     })

@@ -1,15 +1,17 @@
-import {BEGIN, COMMIT, REVERT} from "redux-optimist"
+import { BEGIN, COMMIT, REVERT } from "redux-optimist"
 
 const types = {
   IDEA_SUBMITTED: "IDEA_SUBMITTED",
   IDEA_COMMITTED: "IDEA_COMMITTED",
   IDEA_CREATED: "IDEA_CREATED",
-  UPDATE_IDEA: "UPDATE_IDEA",
-  DELETE_IDEA: "DELETE_IDEA",
+  IDEA_UPDATED: "IDEA_UPDATED",
+  IDEA_DELETED: "IDEA_DELETED",
+  IDEA_REVERTED: "IDEA_REVERTED",
 }
 
 let newIdeaTransactionID = 10000000
 
+let farOffId = 10000000
 export const actions = {
   ideaCreated: idea => {
     return (dispatch, getState, retroChannel) => {
@@ -24,15 +26,15 @@ export const actions = {
 
   submitIdeaOptimistically: idea => {
     return (dispatch, getState, retroChannel) => {
-      const farOffId = 10000000
+      const push = retroChannel.push("new_idea", idea)
 
       dispatch({
         type: types.IDEA_SUBMITTED,
-        idea: {...idea, id: farOffId },
+        idea: {...idea, id: farOffId++ },
         optimist: { type: BEGIN, id: newIdeaTransactionID }
       })
 
-      retroChannel.push("new_idea", idea).receive("ok", (idea) => {
+      push.receive("ok", (idea) => {
         dispatch({
           type: types.IDEA_COMMITTED,
           ideaId: farOffId,
@@ -44,13 +46,13 @@ export const actions = {
   },
 
   updateIdea: (ideaId, newAttributes) => ({
-    type: types.UPDATE_IDEA,
+    type: types.IDEA_UPDATED,
     ideaId,
     newAttributes,
   }),
 
   deleteIdea: ideaId => ({
-    type: types.DELETE_IDEA,
+    type: types.IDEA_DELETED,
     ideaId,
   }),
 }
@@ -62,12 +64,13 @@ export const reducer = (state = [], action) => {
     case types.IDEA_SUBMITTED:
     case types.IDEA_CREATED:
       return [...state, action.idea]
-    case types.UPDATE_IDEA:
+    case types.IDEA_UPDATED:
     case types.IDEA_COMMITTED:
       return state.map(idea => (
         (idea.id === action.ideaId) ? { ...idea, ...action.newAttributes } : idea
       ))
-    case types.DELETE_IDEA:
+    case types.IDEA_DELETED:
+    case types.IDEA_REVERTED:
       return state.filter(idea => idea.id !== action.ideaId)
     default:
       return state
