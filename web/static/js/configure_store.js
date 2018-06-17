@@ -4,13 +4,7 @@ import thunk from "redux-thunk"
 
 import { reducer as rootReducer } from "./redux"
 import interceptOverEagerReactReduxWarning from "./dev-utils/intercept_overeager_reactredux_warning"
-
-const isProd = location.host === "remoteretro.org"
-const { __REDUX_DEVTOOLS_EXTENSION__ } = window
-
-const reduxDevToolsEnabled = !isProd && __REDUX_DEVTOOLS_EXTENSION__
-const storeEnhancer =
-  reduxDevToolsEnabled ? __REDUX_DEVTOOLS_EXTENSION__() : f => f
+import storeEnhancer from "./dev-utils/store_enhancer"
 
 export default retroChannel => {
   const store = createStore(
