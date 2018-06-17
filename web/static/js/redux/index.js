@@ -1,4 +1,5 @@
 import { combineReducers } from "redux"
+import optimist from 'redux-optimist'
 
 import {
   actions as presenceActions,
@@ -34,16 +35,18 @@ import { reducer as stage } from "./stage"
 import { reducer as insertedAt } from "./inserted_at"
 import { reducer as facilitatorId } from "./facilitator_id"
 
-export const reducer = combineReducers({
-  presences,
-  usersById,
-  ideas,
-  votes,
-  stage,
-  facilitatorId,
-  insertedAt,
-  alert,
-})
+export const reducer = optimist(
+  combineReducers({
+    presences,
+    usersById,
+    ideas,
+    votes,
+    stage,
+    facilitatorId,
+    insertedAt,
+    alert,
+  })
+)
 
 export const actions = {
   ...alertActions,

@@ -1,8 +1,12 @@
+import {BEGIN, COMMIT, REVERT} from "redux-optimist"
+
 const types = {
   IDEA_CREATED: "IDEA_CREATED",
   UPDATE_IDEA: "UPDATE_IDEA",
   DELETE_IDEA: "DELETE_IDEA",
 }
+
+let newIdeaTransactionID = 10000000
 
 export const actions = {
   ideaCreated: idea => {
@@ -18,18 +22,22 @@ export const actions = {
 
   submitIdeaOptimistically: idea => {
     return (dispatch, getState, retroChannel) => {
+      const farOffId = 10000000
+
       dispatch({
         type: types.IDEA_CREATED,
-        idea,
+        idea: {...idea, id: farOffId },
+        optimist: { type: BEGIN, id: newIdeaTransactionID }
       })
 
-      retroChannel.push("new_idea", idea)
-        .receive("ok", () => {
-          debugger
+      retroChannel.push("new_idea", idea).receive("ok", (idea) => {
+        dispatch({
+          type: types.UPDATE_IDEA,
+          ideaId: farOffId,
+          newAttributes: idea,
+          optimist: { type: COMMIT, id: newIdeaTransactionID }
         })
-        .receive("error", () => {
-          debugger
-        })
+      })
     }
   },
 
