@@ -1,20 +1,15 @@
-import { BEGIN, COMMIT, REVERT } from "redux-optimist"
-
 const types = {
   IDEA_SUBMITTED: "IDEA_SUBMITTED",
   IDEA_COMMITTED: "IDEA_COMMITTED",
   IDEA_CREATED: "IDEA_CREATED",
   IDEA_UPDATED: "IDEA_UPDATED",
   IDEA_DELETED: "IDEA_DELETED",
-  IDEA_REVERTED: "IDEA_REVERTED",
 }
-
-let newIdeaTransactionID = 10000000
 
 let farOffId = 10000000
 export const actions = {
   ideaCreated: idea => {
-    return (dispatch, getState, retroChannel) => {
+    return (dispatch, getState, _retroChannel) => {
       if (idea.submitter_token === window.userToken) { return }
 
       dispatch({
@@ -27,19 +22,18 @@ export const actions = {
   submitIdeaOptimistically: idea => {
     return (dispatch, getState, retroChannel) => {
       const push = retroChannel.push("new_idea", idea)
+      const placeholderId = farOffId++
 
       dispatch({
         type: types.IDEA_SUBMITTED,
-        idea: {...idea, id: farOffId++ },
-        optimist: { type: BEGIN, id: newIdeaTransactionID }
+        idea: { ...idea, id: placeholderId },
       })
 
-      push.receive("ok", (idea) => {
+      push.receive("ok", idea => {
         dispatch({
           type: types.IDEA_COMMITTED,
-          ideaId: farOffId,
+          ideaId: placeholderId,
           newAttributes: idea,
-          optimist: { type: COMMIT, id: newIdeaTransactionID }
         })
       })
     }
