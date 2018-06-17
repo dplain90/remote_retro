@@ -5,14 +5,31 @@ const types = {
 }
 
 export const actions = {
-  ideaCreated: idea => ({
-    type: types.IDEA_CREATED,
-    idea,
-  }),
+  ideaCreated: idea => {
+    return (dispatch, getState, retroChannel) => {
+      if (idea.submitter_token === window.userToken) { return }
+
+      dispatch({
+        type: types.IDEA_CREATED,
+        idea,
+      })
+    }
+  },
 
   submitIdeaOptimistically: idea => {
     return (dispatch, getState, retroChannel) => {
+      dispatch({
+        type: types.IDEA_CREATED,
+        idea,
+      })
+
       retroChannel.push("new_idea", idea)
+        .receive("ok", () => {
+          debugger
+        })
+        .receive("error", () => {
+          debugger
+        })
     }
   },
 

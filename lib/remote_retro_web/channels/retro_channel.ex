@@ -49,8 +49,8 @@ defmodule RemoteRetroWeb.RetroChannel do
   def handle_in("new_idea", props, socket) do
     idea = add_idea! props, socket
 
-    broadcast! socket, "idea_created", idea
-    {:noreply, socket}
+    broadcast_with_submitter_token! socket, "idea_created", idea, props
+    {:reply, {:ok, idea}, socket}
   end
 
   def handle_in("idea_edited", %{"id" => id, "body" => body, "category" => category, "assigneeId" => assignee_id}, socket) do
@@ -126,5 +126,9 @@ defmodule RemoteRetroWeb.RetroChannel do
     Repo.get(Retro, retro_id)
     |> Retro.changeset(%{stage: stage})
     |> Repo.update!
+  end
+
+  defp broadcast_with_submitter_token!(socket, message, payload, props) do
+    broadcast! socket, message, Map.put(payload, :submitter_token, socket.assigns.user_token)
   end
 end
