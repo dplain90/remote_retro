@@ -206,7 +206,7 @@ defmodule RemoteRetro.RetroChannelTest do
       user_id = user.id
       push(socket, "vote_submitted", %{ideaId: idea_id, userId: user_id})
 
-      refute_broadcast("vote_submitted", %{"idea_id" => ^idea_id, "user_id" => ^user_id})
+      refute_broadcast("vote_submitted", %{"idea_id" => ^idea_id, "user_id" => ^user_id}, 20)
     end
 
     @tag idea: %Idea{category: "sad", body: "JavaScript"}
