@@ -145,8 +145,8 @@ defmodule RemoteRetro.RetroChannelTest do
     test "results in the idea being updated in the database", ~M{socket, idea} do
       idea_id = idea.id
       push(socket, "idea_edited", %{id: idea_id, body: "hell's bells", category: "confused", assigneeId: nil})
+      :timer.sleep(5)
 
-      :timer.sleep(50)
       idea = Repo.get!(Idea, idea_id)
       assert %{body: "hell's bells", category: "confused"} = idea
     end
@@ -182,8 +182,7 @@ defmodule RemoteRetro.RetroChannelTest do
       idea_id = idea.id
       user_id = user.id
       push(socket, "vote_submitted", %{ideaId: idea_id, userId: user_id})
-      :timer.sleep(25)
-      assert_broadcast("vote_submitted", %{"idea_id" => ^idea_id, "user_id" => ^user_id})
+      assert_broadcast("vote_submitted", %{"idea_id" => ^idea_id, "user_id" => ^user_id}, 5)
     end
 
     @tag idea: %Idea{category: "sad", body: "JavaScript"}
@@ -191,7 +190,7 @@ defmodule RemoteRetro.RetroChannelTest do
       idea_id = idea.id
       assert_raise(Ecto.NoResultsError, fn -> Repo.get_by!(Vote, idea_id: idea_id, user_id: user.id) end)
       push(socket, "vote_submitted", %{ideaId: idea_id, userId: user.id})
-      :timer.sleep(25)
+      :timer.sleep(5)
       assert Repo.get_by!(Vote, idea_id: idea_id, user_id: user.id)
     end
   end
@@ -217,7 +216,7 @@ defmodule RemoteRetro.RetroChannelTest do
       assert vote_count == 3
 
       push(socket, "vote_submitted", %{ideaId: idea_id, userId: user.id})
-      :timer.sleep(50)
+      :timer.sleep(5)
 
       vote_count = Repo.aggregate(vote_count_query, :count, :id)
       assert vote_count == 3
