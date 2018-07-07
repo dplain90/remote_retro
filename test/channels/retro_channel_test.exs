@@ -148,8 +148,7 @@ defmodule RemoteRetro.RetroChannelTest do
 
       :timer.sleep(50)
       idea = Repo.get!(Idea, idea_id)
-      assert idea.body == "hell's bells"
-      assert idea.category == "confused"
+      assert %{body: "hell's bells", category: "confused"} = idea
     end
   end
 
