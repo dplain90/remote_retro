@@ -38,6 +38,11 @@
 
     <link rel="preload" href="<%= static_path(@conn, "/css/semantic-ui/font/lato-v14-latin-regular.woff2") %>" as="font" crossorigin="anonymous" />
     <link rel="preload" href="<%= static_path(@conn, "/css/semantic-ui/themes/default/assets/fonts/icons.woff2") %>" as="font" crossorigin="anonymous" />
+
+    <%= if assigns[:is_landing_page] do %>
+      <link rel="preload" href="<%= static_path(@conn, "/images/polygons.jpg") %>" as="image" crossorigin="anonymous" />
+    <% end %>
+
     <link rel="stylesheet" href="<%= static_path(@conn, "/css/semantic-ui/semantic.min.css") %>">
     <link rel="stylesheet" href="<%= app_css(@conn) %>">
 
